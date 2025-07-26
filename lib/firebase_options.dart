@@ -51,12 +51,19 @@ class DefaultFirebaseOptions {
   }
 
    static  FirebaseOptions android = FirebaseOptions(
-        apiKey: dotenv.env['FIREBASE_API_KEY']!,
-        appId: dotenv.env['FIREBASE_APP_ID']!,
-        messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
-        projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
-        storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
+        apiKey: "AIzaSyAmeKKJR8-QRzDEgJQTepZYULzAIPW3cnc",
+        appId: "1:838309574522:android:e957252d7fd0d87cd208c3",
+        messagingSenderId: "838309574522",
+        projectId:"restaurant-mobile-app-4931c",
+        storageBucket:"restaurant-mobile-app-4931c.firebasestorage.app",
       );
+  //  static  FirebaseOptions android = FirebaseOptions(
+  //       apiKey: dotenv.env['FIREBASE_API_KEY']!,
+  //       appId: dotenv.env['FIREBASE_APP_ID']!,
+  //       messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
+  //       projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
+  //       storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
+  //     );
 
   static  FirebaseOptions ios = FirebaseOptions(
         apiKey: dotenv.env['FIREBASE_API_KEY']!,
