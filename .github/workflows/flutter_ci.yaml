@@ -2,7 +2,7 @@ name: Build APK and Release
 
 on:
   push:
-    branches: [master]
+    branches: [main]
 
 jobs:
   build:
@@ -51,23 +51,19 @@ jobs:
         run: |
           NEW_ROW="<tr><td>$(date +'%Y-%m-%d')</td><td><a href=\"https://github.com/${{ github.repository }}/releases/download/v${{ github.run_number }}/app-release.apk\">v${{ github.run_number }}</a></td><td>${{ github.event.head_commit.message }}</td><td>📥</td></tr>"
 
-          # لو الجدول مش موجود ضيف هيكله كامل
           if ! grep -q '<!-- APK_TABLE_START -->' README.md; then
-            cat << 'EOF' >> README.md
-<h2>📦 APK Releases</h2>
-<table>
-  <thead>
-    <tr><th>Date</th><th>Version</th><th>Message</th><th>Download</th></tr>
-  </thead>
-  <tbody>
-  <!-- APK_TABLE_START -->
-  <!-- APK_TABLE_END -->
-  </tbody>
-</table>
-EOF
+            echo "<h2>📦 APK Releases</h2>" >> README.md
+            echo "<table>" >> README.md
+            echo "  <thead>" >> README.md
+            echo "    <tr><th>Date</th><th>Version</th><th>Message</th><th>Download</th></tr>" >> README.md
+            echo "  </thead>" >> README.md
+            echo "  <tbody>" >> README.md
+            echo "  <!-- APK_TABLE_START -->" >> README.md
+            echo "  <!-- APK_TABLE_END -->" >> README.md
+            echo "  </tbody>" >> README.md
+            echo "</table>" >> README.md
           fi
 
-          # أضف الصف الجديد بعد <!-- APK_TABLE_START -->
           sed -i "/<!-- APK_TABLE_START -->/a \    $NEW_ROW" README.md
 
           git config user.name github-actions
