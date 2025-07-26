@@ -80,3 +80,10 @@ flutter run
   <!-- APK_TABLE_END -->
   </tbody>
 </table>
+
+## 📦 APK Releases
+
+| Date | Version | Message | Download |
+|------|---------|---------|----------|
+<!-- APK_TABLE -->
+| 2025-07-26 | v5 | Merge branch 'main' of https://github.com/NOURHAN02/Restaurant-app | [📥 Download](https://github.com/NOURHAN02/Restaurant-app/releases/download/v5/app-release.apk) |
