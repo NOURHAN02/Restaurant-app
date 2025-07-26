@@ -6,21 +6,11 @@ import 'package:restaurant_app/screens/auth/login_view.dart';
 import 'package:restaurant_app/screens/auth/register_view.dart';
 import 'package:restaurant_app/screens/home/details_menu_item.dart';
 import 'package:restaurant_app/screens/home/nav_bar_.dart';
-import 'package:restaurant_app/screens/splash/splash_view.dart';
 
 class Routers {
   static Route<dynamic> generteRoute(RouteSettings settings) {
     switch (settings.name) {
-      case RountingConstants.splashScreen:
-        return PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) {
-            return const SplashView();
-          },
-          transitionDuration: Duration.zero,
-          reverseTransitionDuration: Duration.zero,
-          settings: settings,
-        );
-
+      
       case RountingConstants.loginScreen:
         return PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) {

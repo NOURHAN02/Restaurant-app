@@ -10,9 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/providers/auth_provider.dart';
 
 void main() async {
-
-  await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
