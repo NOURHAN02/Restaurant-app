@@ -68,4 +68,3 @@ git clone https://github.com/NOURHAN02/Restaurant-App-.git
 cd restaurant_app
 flutter pub get
 flutter run
-
