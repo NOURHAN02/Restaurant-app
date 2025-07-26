@@ -69,14 +69,3 @@ cd restaurant_app
 flutter pub get
 flutter run
 
-<h2>📦 APK Releases</h2>
-<table>
-  <thead>
-    <tr><th>Date</th><th>Version</th><th>Message</th><th>Download</th></tr>
-  </thead>
-  <tbody>
-  <!-- APK_TABLE_START -->
-    <tr><td>2025-07-26</td><td><a href="https://github.com/NOURHAN02/Restaurant-app/releases/download/v4/app-release.apk">v4</a></td><td>build apk</td><td>📥</td></tr>
-  <!-- APK_TABLE_END -->
-  </tbody>
-</table>
