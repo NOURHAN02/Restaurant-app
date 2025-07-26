@@ -1,0 +1,76 @@
+name: Build APK and Release
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cancel if commit from bot
+        if: contains(github.event.head_commit.message, '📄 Add APK')
+        run: |
+          echo "Commit is from bot. Skipping workflow..."
+          exit 0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.8'
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Create .env file
+        run: |
+          echo "FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" >> .env
+          echo "FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID }}" >> .env
+          echo "FIREBASE_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}" >> .env
+          echo "FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}" >> .env
+          echo "FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}" >> .env
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "Release v${{ github.run_number }}"
+          tag_name: "v${{ github.run_number }}"
+          files: build/app/outputs/flutter-apk/app-release.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update README with new APK row
+        run: |
+          NEW_ROW="<tr><td>$(date +'%Y-%m-%d')</td><td><a href=\"https://github.com/${{ github.repository }}/releases/download/v${{ github.run_number }}/app-release.apk\">v${{ github.run_number }}</a></td><td>${{ github.event.head_commit.message }}</td><td>📥</td></tr>"
+
+          # لو الجدول مش موجود ضيف هيكله كامل
+          if ! grep -q '<!-- APK_TABLE_START -->' README.md; then
+            cat << 'EOF' >> README.md
+<h2>📦 APK Releases</h2>
+<table>
+  <thead>
+    <tr><th>Date</th><th>Version</th><th>Message</th><th>Download</th></tr>
+  </thead>
+  <tbody>
+  <!-- APK_TABLE_START -->
+  <!-- APK_TABLE_END -->
+  </tbody>
+</table>
+EOF
+          fi
+
+          # أضف الصف الجديد بعد <!-- APK_TABLE_START -->
+          sed -i "/<!-- APK_TABLE_START -->/a \    $NEW_ROW" README.md
+
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add README.md
+          git diff --cached --exit-code || (git commit -m "📄 Add APK v${{ github.run_number }} to README table" && git push)
