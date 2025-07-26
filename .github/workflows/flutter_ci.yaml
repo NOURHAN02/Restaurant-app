@@ -47,27 +47,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Update README with new APK row
+      - name: Update README with APK download icon
         run: |
-          # لو الجدول مش موجود ضيف هيكله
-          if ! grep -q '<!-- APK_TABLE -->' README.md; then
-            echo "" >> README.md
-            echo "## 📦 APK Releases" >> README.md
-            echo "" >> README.md
-            echo "| Date | Version | Message | Download |" >> README.md
-            echo "|------|---------|---------|----------|" >> README.md
-            echo "<!-- APK_TABLE -->" >> README.md
-          fi
-
-          # الصف الجديد
-          NEW_ROW="| $(date +'%Y-%m-%d') | v${{ github.run_number }} | ${{ github.event.head_commit.message }} | [📥 Download](https://github.com/${{ github.repository }}/releases/download/v${{ github.run_number }}/app-release.apk) |"
-
-          # أضف الصف بعد العلامة
-          sed -i "/<!-- APK_TABLE -->/a $NEW_ROW" README.md
-
+          DOWNLOAD_LINK="https://github.com/${{ github.repository }}/releases/download/v${{ github.run_number }}/app-release.apk"
+          
+          # احذف أي سطر قديم فيه Download APK
+          sed -i '/Download APK/d' README.md
+          
+          # أضف السطر الجديد في بداية README
+          echo "[![Download APK](https://img.icons8.com/fluency/48/download.png)]($DOWNLOAD_LINK) **Download APK**" | cat - README.md > temp && mv temp README.md
+          
           # إعداد git ورفع التعديل
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add README.md
-          git commit -m "📄 Update README with APK v${{ github.run_number }}"
+          git diff --cached --quiet || git commit -m "📄 Update APK download link v${{ github.run_number }}"
           git push
