@@ -49,24 +49,25 @@ jobs:
 
       - name: Update README with new APK row
         run: |
-          NEW_ROW="<tr><td>$(date +'%Y-%m-%d')</td><td><a href=\"https://github.com/${{ github.repository }}/releases/download/v${{ github.run_number }}/app-release.apk\">v${{ github.run_number }}</a></td><td>${{ github.event.head_commit.message }}</td><td>📥</td></tr>"
-
-          if ! grep -q '<!-- APK_TABLE_START -->' README.md; then
-            echo "<h2>📦 APK Releases</h2>" >> README.md
-            echo "<table>" >> README.md
-            echo "  <thead>" >> README.md
-            echo "    <tr><th>Date</th><th>Version</th><th>Message</th><th>Download</th></tr>" >> README.md
-            echo "  </thead>" >> README.md
-            echo "  <tbody>" >> README.md
-            echo "  <!-- APK_TABLE_START -->" >> README.md
-            echo "  <!-- APK_TABLE_END -->" >> README.md
-            echo "  </tbody>" >> README.md
-            echo "</table>" >> README.md
+          # لو الجدول مش موجود ضيف هيكله
+          if ! grep -q '<!-- APK_TABLE -->' README.md; then
+            echo "" >> README.md
+            echo "## 📦 APK Releases" >> README.md
+            echo "" >> README.md
+            echo "| Date | Version | Message | Download |" >> README.md
+            echo "|------|---------|---------|----------|" >> README.md
+            echo "<!-- APK_TABLE -->" >> README.md
           fi
 
-          sed -i "/<!-- APK_TABLE_START -->/a \    $NEW_ROW" README.md
+          # الصف الجديد
+          NEW_ROW="| $(date +'%Y-%m-%d') | v${{ github.run_number }} | ${{ github.event.head_commit.message }} | [📥 Download](https://github.com/${{ github.repository }}/releases/download/v${{ github.run_number }}/app-release.apk) |"
 
+          # أضف الصف بعد العلامة
+          sed -i "/<!-- APK_TABLE -->/a $NEW_ROW" README.md
+
+          # إعداد git ورفع التعديل
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add README.md
-          git diff --cached --exit-code || (git commit -m "📄 Add APK v${{ github.run_number }} to README table" && git push)
+          git commit -m "📄 Update README with APK v${{ github.run_number }}"
+          git push
