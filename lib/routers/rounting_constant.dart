@@ -1,6 +1,5 @@
 class RountingConstants {
-  static const String splashScreen = "/";
-  static const String loginScreen = "/loginScreen";
+  static const String loginScreen = "/";
   static const String registerScreen = "/registerScreen";
   static const String forgetPasswordScreen = "/forgetPasswordScreen";
   static const String navBarScreen = "/NavBarScreen";
