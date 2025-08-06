@@ -1,8 +1,9 @@
 <<<<<<< HEAD
 [![Download APK](https://img.icons8.com/fluency/48/download.png)](https://github.com/NOURHAN02/Restaurant-app/releases/download/v11/app-release.apk) **Download APK**
 
-| Date | Version Name | Download APK | 
-|------|--------------|--------------|
+| Date       | Version Name | Download APK |
+|------------|--------------|--------------|
+
 
 
 # 🍽️ Restaurant App  

@@ -62,7 +62,7 @@
 #           git diff --cached --quiet || git commit -m "📄 Update APK download link v${{ github.run_number }}"
 #           git push
 
-name: Append Version Row to README
+name: Append New Row to README
 
 on:
   push:
@@ -73,27 +73,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Get current date
+      - name: Set current date
         run: echo "DATE=$(date +'%d-%m-%Y')" >> $GITHUB_ENV
 
-      - name: Append new row to README
+      - name: Append new row to README table
         run: |
           VERSION_NAME="FirstEdit"
           APK_URL="https://example.com/app.apk"
           VERSION_TAG="v 2.0.0"
-
           NEW_ROW="| $DATE | $VERSION_NAME | [$VERSION_TAG]($APK_URL) |"
 
-          # Add new row after the header row (insert at line 3)
-          awk -v new_row="$NEW_ROW" 'NR==3{print new_row} 1' README.md > temp && mv temp README.md
+          # Create new file with header + new row + old content (excluding header)
+          awk -v new_row="$NEW_ROW" 'NR==1 || NR==2 {print} NR==3{print new_row} NR>2{print}' README.md > temp && mv temp README.md
 
-      - name: Commit and push
+      - name: Commit and push changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md
-          git commit -m "➕ Add new release row: $DATE"
+          git commit -m "➕ Add new row to table"
           git push
