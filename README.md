@@ -66,7 +66,7 @@ lib
 - Email/Password Authentication enabled  
 
 ### 📥 Installation
-
+```bash
 git clone https://github.com/NOURHAN02/Restaurant-app-.git
 cd restaurant_app
 flutter pub get
