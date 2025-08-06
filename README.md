@@ -3,7 +3,7 @@
 
 | Date | Version Name | Download APK | 
 |------|--------------|--------------|
-|7-8-2025|FirstEdit|[v 1.0.0](https://your-link.com/app.apk)|
+
 
 # 🍽️ Restaurant App  
 

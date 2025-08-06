@@ -1,63 +1,99 @@
-name: Build APK and Release
+# name: Build APK and Release
 
-# on:
-#   push:
-#     branches: [main]
+# # on:
+# #   push:
+# #     branches: [main]
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Cancel if commit from bot
+#         if: contains(github.event.head_commit.message, '📄 Add APK')
+#         run: |
+#           echo "Commit is from bot. Skipping workflow..."
+#           exit 0
+
+#       - name: Checkout Repo
+#         uses: actions/checkout@v3
+
+#       - name: Setup Flutter
+#         uses: subosito/flutter-action@v2
+#         with:
+#           flutter-version: '3.32.8'
+
+#       - name: Install Dependencies
+#         run: flutter pub get
+
+#       - name: Create .env file
+#         run: |
+#           echo "FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" >> .env
+#           echo "FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID }}" >> .env
+#           echo "FIREBASE_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}" >> .env
+#           echo "FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}" >> .env
+#           echo "FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}" >> .env
+
+#       - name: Build APK
+#         run: flutter build apk --release
+
+#       - name: Create GitHub Release
+#         id: create_release
+#         uses: softprops/action-gh-release@v1
+#         with:
+#           name: "Release v${{ github.run_number }}"
+#           tag_name: "v${{ github.run_number }}"
+#           files: build/app/outputs/flutter-apk/app-release.apk
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+#       - name: Update README with APK download icon
+#         run: |
+#           DOWNLOAD_LINK="https://github.com/${{ github.repository }}/releases/download/v${{ github.run_number }}/app-release.apk"
+          
+#           sed -i '/Download APK/d' README.md
+          
+         
+#           echo "[![Download APK](https://img.icons8.com/fluency/48/download.png)]($DOWNLOAD_LINK) **Download APK**" | cat - README.md > temp && mv temp README.md
+          
+#           git config user.name github-actions
+#           git config user.email github-actions@github.com
+#           git add README.md
+#           git diff --cached --quiet || git commit -m "📄 Update APK download link v${{ github.run_number }}"
+#           git push
+
+name: Append Version Row to README
+
+on:
+  push:
+    branches: [main]
 
 jobs:
-  build:
+  append-row:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Cancel if commit from bot
-        if: contains(github.event.head_commit.message, '📄 Add APK')
-        run: |
-          echo "Commit is from bot. Skipping workflow..."
-          exit 0
-
-      - name: Checkout Repo
+      - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.32.8'
+      - name: Get current date
+        run: echo "DATE=$(date +'%d-%m-%Y')" >> $GITHUB_ENV
 
-      - name: Install Dependencies
-        run: flutter pub get
-
-      - name: Create .env file
+      - name: Append new row to README
         run: |
-          echo "FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" >> .env
-          echo "FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID }}" >> .env
-          echo "FIREBASE_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}" >> .env
-          echo "FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}" >> .env
-          echo "FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}" >> .env
+          VERSION_NAME="FirstEdit"
+          APK_URL="https://example.com/app.apk"
+          VERSION_TAG="v 2.0.0"
 
-      - name: Build APK
-        run: flutter build apk --release
+          NEW_ROW="| $DATE | $VERSION_NAME | [$VERSION_TAG]($APK_URL) |"
 
-      - name: Create GitHub Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          name: "Release v${{ github.run_number }}"
-          tag_name: "v${{ github.run_number }}"
-          files: build/app/outputs/flutter-apk/app-release.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Add new row after the header row (insert at line 3)
+          awk -v new_row="$NEW_ROW" 'NR==3{print new_row} 1' README.md > temp && mv temp README.md
 
-      - name: Update README with APK download icon
+      - name: Commit and push
         run: |
-          DOWNLOAD_LINK="https://github.com/${{ github.repository }}/releases/download/v${{ github.run_number }}/app-release.apk"
-          
-          sed -i '/Download APK/d' README.md
-          
-         
-          echo "[![Download APK](https://img.icons8.com/fluency/48/download.png)]($DOWNLOAD_LINK) **Download APK**" | cat - README.md > temp && mv temp README.md
-          
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md
-          git diff --cached --quiet || git commit -m "📄 Update APK download link v${{ github.run_number }}"
+          git commit -m "➕ Add new release row: $DATE"
           git push
