@@ -131,14 +131,21 @@ jobs:
       - name: Set current date
         run: echo "DATE=$(date +'%d-%m-%Y')" >> $GITHUB_ENV
 
-      - name: Get commit message
-        run: echo "COMMIT_MESSAGE=${{ github.event.head_commit.message }}" >> $GITHUB_ENV
+      - name: Get latest commit message
+        id: commit
+        run: echo "COMMIT_MESSAGE=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
+
+      - name: Skip merge commits
+        if: startsWith(env.COMMIT_MESSAGE, 'Merge')
+        run: echo "⏭️ Skipping merge commit."
 
       - name: Append new row to README table
+        if: "!startsWith(env.COMMIT_MESSAGE, 'Merge')"
         run: |
+          VERSION_NAME="$COMMIT_MESSAGE"
           APK_URL="https://example.com/app.apk"
-          VERSION_TAG="v 6.0.0"
-          NEW_ROW="| $DATE | $COMMIT_MESSAGE | [$VERSION_TAG]($APK_URL) |"
+          VERSION_TAG="v 5.0.0"
+          NEW_ROW="| $DATE | $VERSION_NAME | [$VERSION_TAG]($APK_URL) |"
 
           awk -v new_row="$NEW_ROW" '
             BEGIN { added = 0 }
@@ -162,6 +169,7 @@ jobs:
           ' README.md > temp && mv temp README.md
 
       - name: Commit and push changes
+        if: "!startsWith(env.COMMIT_MESSAGE, 'Merge')"
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
