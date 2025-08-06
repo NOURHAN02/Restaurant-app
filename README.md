@@ -81,3 +81,5 @@ flutter run -->
 | 06-08-2025 | FirstEdit | [v 2.0.0](https://example.com/app.apk) |
 | 06-08-2025 | FirstEdit | [v 2.0.0](https://example.com/app.apk) |
 | 06-08-2025 | FirstEdit | [v 1.0.0](https://example.com/app.apk) |
+
+| 06-08-2025 | FirstEdit | [v 3.0.0](https://example.com/app.apk) |
