@@ -156,7 +156,7 @@ jobs:
         run: |
           VERSION_NAME="FirstEdit"
           APK_URL="https://example.com/app.apk"
-          VERSION_TAG="v 4.0.0"
+          VERSION_TAG="v 5.0.0"
           NEW_ROW="| $DATE | $VERSION_NAME | [$VERSION_TAG]($APK_URL) |"
 
           awk -v new_row="$NEW_ROW" '
