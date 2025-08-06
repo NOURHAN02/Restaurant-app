@@ -96,6 +96,45 @@
 #           git add README.md
 #           git commit -m "➕ Add new row to table"
 #           git push
+
+# name: Append New Row to README
+
+# on:
+#   push:
+#     branches: [main]
+
+# jobs:
+#   append-row:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
+
+#       - name: Set current date
+#         run: echo "DATE=$(date +'%d-%m-%Y')" >> $GITHUB_ENV
+
+#       - name: Append new row to README table
+#         run: |
+#           VERSION_NAME="FirstEdit"
+#           APK_URL="https://example.com/app.apk"
+#           VERSION_TAG="v 3.0.0"
+#           NEW_ROW="| $DATE | $VERSION_NAME | [$VERSION_TAG]($APK_URL) |"
+
+#           # Append the new row to the end of the table only if it's not already there
+#           if ! grep -qF "$NEW_ROW" README.md; then
+#             echo "" >> README.md
+#             echo "$NEW_ROW" >> README.md
+#           fi
+
+#       - name: Commit and push changes
+#         run: |
+#           git config --global user.name "github-actions[bot]"
+#           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+#           git add README.md
+#           git commit -m "➕ Add new row to table"
+#           git push
+
 name: Append New Row to README
 
 on:
@@ -117,14 +156,29 @@ jobs:
         run: |
           VERSION_NAME="FirstEdit"
           APK_URL="https://example.com/app.apk"
-          VERSION_TAG="v 3.0.0"
+          VERSION_TAG="v 4.0.0"
           NEW_ROW="| $DATE | $VERSION_NAME | [$VERSION_TAG]($APK_URL) |"
 
-          # Append the new row to the end of the table only if it's not already there
-          if ! grep -qF "$NEW_ROW" README.md; then
-            echo "" >> README.md
-            echo "$NEW_ROW" >> README.md
-          fi
+          awk -v new_row="$NEW_ROW" '
+            BEGIN { added = 0 }
+            /^[|].*[|].*[|].*[|]$/ {
+              last_line = NR
+              lines[NR] = $0
+              next
+            }
+            {
+              lines[NR] = $0
+            }
+            END {
+              for (i = 1; i <= NR; i++) {
+                print lines[i]
+                if (i == last_line && !added) {
+                  print new_row
+                  added = 1
+                }
+              }
+            }
+          ' README.md > temp && mv temp README.md
 
       - name: Commit and push changes
         run: |
