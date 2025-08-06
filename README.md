@@ -78,4 +78,3 @@ git clone https://github.com/NOURHAN02/Restaurant-app-.git
 cd restaurant_app
 flutter pub get
 flutter run
-| 06-08-2025 | FirstEdit | [v 2.0.0](https://example.com/app-v2.apk) |
