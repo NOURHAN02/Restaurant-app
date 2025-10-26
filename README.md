@@ -76,4 +76,5 @@ flutter run -->
 |------------|--------------|--------------|
 | 06-08-2025 | FirstEdit | [v 2.0.0](https://example.com/app.apk) |
 | 06-08-2025 | SecondEdit | [v 2.0.0](https://example.com/app.apk) |
+| 26-10-2025 | Update README.md | [v 5.0.0](https://example.com/app.apk) |
 
